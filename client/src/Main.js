@@ -2,7 +2,7 @@ import React from "react";
 import {UnControlled as CodeMirror} from "react-codemirror2";
 
 import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
+import "codemirror/theme/xq-light.css";
 
 import "./Main.css";
 
@@ -16,8 +16,10 @@ export default class Main extends React.Component {
                     value="Hello"
                     options={{
                         mode: "javascript",
-                        theme: "material",
+                        theme: "xq-light",
+                        indentUnit: 4,
                         lineNumbers: true,
+                        autofocus: true,
                     }}
                     onChange={(editor, data, value) => {}}
                 />
