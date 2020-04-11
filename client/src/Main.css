@@ -1,10 +1,16 @@
 .main {
+    display: flex;
+
     max-width: 38rem;
-    padding: 2rem;
     margin: auto;
 
     height: 100%;
     background-color: white;
 
     box-shadow: 0px 2px 4px 0px rgba(31, 31, 31, 0.3);
+}
+
+.react-codemirror2 {
+    width: 100%;
+    padding: 0;
 }
