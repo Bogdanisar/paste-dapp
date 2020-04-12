@@ -30,6 +30,7 @@ export default class Editor extends React.Component {
         return (
             <CodeMirror
                 value={code}
+                onChange={this.props.onChange}
                 options={{
                     theme: "xq-light",
                     indentUnit: 4,
