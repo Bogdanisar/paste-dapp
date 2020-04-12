@@ -1,0 +1,27 @@
+.submit {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.options {
+    margin-left: 12px;
+}
+
+.options > * {
+    margin-right: 12px;
+}
+
+.options .button {
+    float: right;
+}
+
+.react-codemirror2 {
+    height: 90%;
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+.react-codemirror2 :first-child {
+    height: 100%;
+}
