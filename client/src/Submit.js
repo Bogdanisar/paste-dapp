@@ -32,7 +32,7 @@ export default class Submit extends React.Component {
     }
 
     handleChange(event) {
-        const target = event.target;
+        const {target} = event;
         if (target.name === "language") {
             this.setState((previousState) =>
                 Object.assign({}, previousState, {languageId: target.value})
