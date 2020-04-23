@@ -10,6 +10,21 @@ contract PasteDapp {
         return keccak256(abi.encodePacked(self)) == keccak256(abi.encodePacked(other));
     }
     
+    function getSubarray(uint[] storage arr, uint index, uint howmany) internal view returns (uint[] memory ret) {
+        require(index < arr.length, "Index is too large!");
+        require(howmany > 0, "Must request a positive number of ids!");
+        
+        if (arr.length - index < howmany) {
+            howmany = arr.length - index;
+        }
+        
+        ret = new uint[](howmany);
+        for (uint i = 0; i < howmany; ++i) {
+            ret[i] = arr[index + i];
+        }
+    }
+    
+    
     uint internal newPasteId;
     
     
@@ -25,15 +40,15 @@ contract PasteDapp {
     }
     
     mapping (uint => PublicPaste) internal publicPasteMap;
-    mapping (address => uint[]) public publicPastesOfUser; // these aren't stored in any particular order
-    uint[] latestPastes; // last element is most recent;
+    mapping (address => uint[]) internal publicPastesOfUser; // last element is most recent;
+    uint[] internal latestPastes; // last element is most recent;
     
     
     function postPublicPaste(string memory _text, string memory _title) public returns (uint pasteId) {
         pasteId = newPasteId++;
         publicPasteMap[pasteId] = PublicPaste(_text, _title, msg.sender, now, false);
-        publicPastesOfUser[msg.sender].push(pasteId);
         
+        publicPastesOfUser[msg.sender].push(pasteId);
         latestPastes.push(pasteId);
     }
     
@@ -64,18 +79,22 @@ contract PasteDapp {
         pp.edited = true;
     }
     
+    
+    function getNumberOfPublicPastes() public view returns (uint) {
+        return latestPastes.length;
+    }
+    
     function getLatestPastes(uint index, uint howmany) public view returns (uint[] memory ret) {
-        require(index < latestPastes.length, "Index is too large!");
-        require(howmany > 0, "Must request a positive number of ids!");
-        
-        if (latestPastes.length - index < howmany) {
-            howmany = latestPastes.length - index;
-        }
-        
-        ret = new uint[](howmany);
-        for (uint i = 0; i < howmany; ++i) {
-            ret[i] = latestPastes[index + i];
-        }
+        return getSubarray(latestPastes, index, howmany);
+    }
+    
+    
+    function getNumberOfUserPublicPastes() public view returns (uint) {
+        return publicPastesOfUser[msg.sender].length;
+    }
+    
+    function getPublicPastesOfUser(uint index, uint howmany) public view returns (uint[] memory ret) {
+        return getSubarray(publicPastesOfUser[msg.sender], index, howmany);
     }
     
     
@@ -95,16 +114,13 @@ contract PasteDapp {
     }
     
     mapping (uint => UnlistedPaste) unlistedPasteMap;
-    mapping (address => uint[]) public unlistedPastesOfUser; // these aren't stored in any particular order
+    mapping (address => uint[]) internal unlistedPastesOfUser; // last element is most recent;
     
     function postUnlistedPaste(string memory _encryptedText, string memory _keyHash, string memory _name) public returns (uint pasteId) {
         pasteId = newPasteId++;
         unlistedPasteMap[pasteId] = UnlistedPaste(_encryptedText, _name, msg.sender, now, false, _keyHash);
+        
         unlistedPastesOfUser[msg.sender].push(pasteId);
-    }
-    
-    function postUnlistedPaste(string memory _encryptedText, string memory _keyHash) public returns (uint pasteId) {
-        return postUnlistedPaste(_encryptedText, _keyHash, "Untitled");
     }
     
     function getUnlistedPaste(uint id, string memory _keyHash) public view returns (
@@ -133,6 +149,17 @@ contract PasteDapp {
         up.name = _name;
         up.edited = true;
     }
+    
+    
+    
+    function getNumberOfUserUnlistedPastes() public view returns (uint) {
+        return unlistedPastesOfUser[msg.sender].length;
+    }
+    
+    function getUnlistedPastesOfUser(uint index, uint howmany) public view returns (uint[] memory ret) {
+        return getSubarray(unlistedPastesOfUser[msg.sender], index, howmany);
+    }
+    
     
 }
 
