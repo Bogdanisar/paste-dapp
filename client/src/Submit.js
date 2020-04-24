@@ -1,6 +1,6 @@
 import React from "react";
 import Editor, {LANGUAGE_LIST} from "./Editor";
-import {Select, MenuItem} from "@material-ui/core";
+import {Select, MenuItem, Input} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
@@ -76,6 +76,7 @@ export default class Submit extends React.Component {
                     <Select name="privacy" value={privacyOptionId} onChange={this.handleChange}>
                         {privacyOptions}
                     </Select>
+                    <Input defaultValue="Key" disabled={privacyOptionId === 0} />
                     <Button className="button" color="default" startIcon={<CloudUploadIcon />}>
                         Upload
                     </Button>
