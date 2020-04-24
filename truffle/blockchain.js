@@ -104,11 +104,13 @@ $(() => {
 */
 
 // Returns the id for the new Paste and the encryption/decryption key
-async function addUnlistedPaste(text, lang, title) {
+async function addUnlistedPaste(text, language, title) {
   var key = GenerateRandomKey()
   var encryptedText = Encrypt(text, key)
+  var encryptedTitle = Encrypt(title, key)
+  var encryptedLanguage = Encrypt(language, key)
   var keyHash = Hash(key)
-  await Blockchain.pastedapp.postUnlistedPaste(encryptedText, keyHash, title)
+  await Blockchain.pastedapp.postUnlistedPaste(keyHash, encryptedText, encryptedTitle, encryptedLanguage)
   var number = await Blockchain.pastedapp.getNumberOfUserUnlistedPastes()
   number = number.toNumber()
   var vect = await Blockchain.pastedapp.getUnlistedPastesOfUser(number - 1, 1)
@@ -125,51 +127,54 @@ async function getUnlistedPaste(id, key) {
   var keyHash = Hash(key)
   try {
     var unlistedPaste = await Blockchain.pastedapp.getUnlistedPaste(id, keyHash)
-    var encryptedText = unlistedPaste[0]
-    var decryptedText = Decrypt(encryptedText, key)
-    var title = unlistedPaste[1]
+    var decryptedText = Decrypt(unlistedPaste[0], key)
+    var decryptedTitle = Decrypt(unlistedPaste[1], key)
+    var decryptedLanguage = Decrypt(unlistedPaste[2], key)
     return {
-      "title": title,
-      "text": decryptedText
+      "title": decryptedTitle,
+      "text": decryptedText,
+      "language": decryptedLanguage
     }
   } catch(error) {
-    // We received an unregistered id
-    console.log("Paste doesn't exist or you don't have access to it")
-    return null
-    // if(unlistedPaste[5] != keyHash){
-    //   // We received a wrong key for this id
-    //   return null
-    // }
-  }
-  
+    // We received a wrong id or a wrong key
+    return {
+      "error": "Paste doesn't exist or the key provided is wrong"
+    }
+  } 
 }
 
 // Returns a bool representing if the edit was succesfull
-async function editUnlistedPaste(id, key, newText, newLanguage, newTitle) {  
-  // La functia de edit din smart contract ar trebui verificat si hash-urile functiilor
+async function editUnlistedPaste(id, key, newText, newLanguage, newTitle) {
   var newEncryptedText = Encrypt(newText, key)
+  var newEncryptedTitle = Encrypt(newTitle, key)
+  var newEncryptedLanguage = Encrypt(newLanguage, key)
   var hashKey = Hash(key)
-  var owner = (await Blockchain.pastedapp.getUnlistedPaste(id, hashKey))[2]
+  
+  var owner
+  try {
+    owner = (await Blockchain.pastedapp.getUnlistedPaste(id, hashKey))[3]
+  } catch(error) {
+    // The paste with this id doesn't exist
+    return {
+      "error": "The paste with this id doesn't exist or the key for it is wrong"
+    }
+  }
+
   if (owner == Blockchain.contracts.PasteDapp.currentProvider.selectedAddress) {
-    await Blockchain.pastedapp.editUnlistedPaste(id, newEncryptedText, newTitle)
-    return true
+    await Blockchain.pastedapp.editUnlistedPaste(id, hashKey, newEncryptedText, newEncryptedTitle, newEncryptedLanguage)
+    return
   } else {
-    if(parseInt(owner, 16) == 0){
-      // The paste with this id doesn't exist
-      console.log("Paste doesn't exist")
-      return false
-    } else {
-      // The user is not allowed to change this paste
-      // because it doesn't belong to him
-      console.log("You are not allowed to edit")
-      return false
+    // The user is not allowed to change this paste
+    // because it doesn't belong to him
+    return {
+      "error": "You are not allowed to edit this paste, because it doesn't belong to you"
     }
   }
 }
 
 // Returns the id of the Paste
-async function addPublicPaste(txt, lang, title = 'Untitled') {
-  await Blockchain.pastedapp.postPublicPaste(txt, title)
+async function addPublicPaste(text, language, title = 'Untitled') {
+  await Blockchain.pastedapp.postPublicPaste(text, title, language)
   var number = await Blockchain.pastedapp.getNumberOfUserPublicPastes()
   number = number.toNumber()
   var vect = await Blockchain.pastedapp.getPublicPastesOfUser(number - 1, 1)
@@ -184,12 +189,14 @@ async function getPublicPaste(id) {
     var paste = await Blockchain.pastedapp.getPublicPaste(id)
     return {
       "title": paste[1],
-      "text": paste[0]
+      "text": paste[0],
+      "language": paste[2]
     }
   } catch(error) {
     // The paste with this id doesn't exist
-    console.log("Paste doesn't exist")
-    return null
+    return {
+      "error": "The paste with this id doesn't exist"
+    }
   }
 }
 
@@ -197,7 +204,19 @@ async function getPublicPaste(id) {
 async function getLatestPublicPastes(index, howmany) {
   var ids = []
   var texts = []
-  var latestPastes = await Blockchain.pastedapp.getLatestPastes(index, howmany)
+  if(howmany <= 0) {
+    return {
+      "error": "Illegal number requested. The requested number should be positive"
+    }
+  }
+  try {
+    var latestPastes = await Blockchain.pastedapp.getLatestPastes(index, howmany)
+  } catch(error) {
+    // Start index is bigger than the last id
+    return {
+      "error": "Start index is too large"
+    }
+  }
   for (var i = 0; i < latestPastes.length; i++) {
     ids.push(latestPastes[i].toNumber())
   }
@@ -209,21 +228,25 @@ async function getLatestPublicPastes(index, howmany) {
 }
 
 // Returns a bool representing if edit was succesfull
-async function editPublicPaste(id, newText, newTitle = 'Untitled') {
-  var owner = (await Blockchain.pastedapp.getPublicPaste(id))[2]
+async function editPublicPaste(id, newText, newLanguage, newTitle = 'Untitled') {
+  var owner
+  try {
+    owner = (await Blockchain.pastedapp.getPublicPaste(id))[3]
+  } catch(error) {
+    // The paste doesn't exist
+    return {
+      "error": "The paste with this id doesn't exist"
+    }
+  }
+
   if(owner == Blockchain.contracts.PasteDapp.currentProvider.selectedAddress){
-    await Blockchain.pastedapp.editPublicPaste(id, newText, newTitle)
-    return true
+    await Blockchain.pastedapp.editPublicPaste(id, newText, newTitle, newLanguage)
+    return
   } else {
-    if(parseInt(owner, 16) == 0){
-      // The paste doesn't exist
-      console.log("Paste doesn't exist")
-      return false
-    } else {
-      // This paste doesn't belong to this user
-      // He can't edit it
-      console.log("You can't edit this")
-      return false
+    // This paste doesn't belong to this user
+    // He can't edit it
+    return {
+      "error": "You can't edit this paste, because it doesn't belong to you"
     }
   }
 }
