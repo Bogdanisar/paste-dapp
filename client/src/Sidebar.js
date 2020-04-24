@@ -8,7 +8,6 @@ export default class Sidebar extends React.Component {
                 <a className="logo" href="/">
                     Paste D-App
                 </a>
-                <a href="/login">Login</a>
             </div>
         );
     }
