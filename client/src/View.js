@@ -9,18 +9,19 @@ export default function View(props) {
     const {pasteId} = useParams();
     const [pasteData, setPasteData] = useState(null);
 
-    const fetchData = async () => {
-        try {
-            const data = await blockchain.getPublic(pasteId);
-            setPasteData(data);
-        } catch (e) {
-            setPasteData({error: e.toString()});
-        }
-    };
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await blockchain.getPublic(pasteId);
+                setPasteData(data);
+            } catch (e) {
+                setPasteData({error: e.toString()});
+            }
+        };
+
         fetchData();
-    }, [blockchain]);
+    }, [blockchain, pasteId]);
 
     if (!blockchain || !pasteData) {
         return <></>;

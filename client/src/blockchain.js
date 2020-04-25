@@ -15,7 +15,7 @@ class Blockchain {
     }
 
     async callApi(method, ...args) {
-        const result = await this.instance[method].call(...args, {from: this.getAccount()});
+        const result = await this.instance[method](...args, {from: this.getAccount()});
         console.info(`${method}: ${result}`);
         return result;
     }

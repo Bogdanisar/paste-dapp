@@ -56,8 +56,8 @@ class Submit extends React.Component {
     }
 
     async uploadPaste() {
-        const api = this.props.blockchain;
-        if (!api) {
+        const {blockchain, history} = this.props;
+        if (!blockchain) {
             this.setState((previousState) =>
                 Object.assign({}, previousState, {errorMessage: "Failed to load blockchain."})
             );
@@ -66,7 +66,8 @@ class Submit extends React.Component {
 
         const {languageId, code} = this.state;
         try {
-            const pasteId = await api.postPublic(code, languageId.toString());
+            const pasteId = await blockchain.postPublic(code, languageId.toString());
+            history.push(`/view/${pasteId}`);
         } catch (e) {
             this.setState((previousState) =>
                 Object.assign({}, previousState, {errorMessage: e.toString()})
