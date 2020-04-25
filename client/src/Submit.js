@@ -7,6 +7,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
+import {getBlockchain} from "./blockchain";
+
 import "./Submit.css";
 
 export default class Submit extends React.Component {
@@ -18,21 +20,21 @@ export default class Submit extends React.Component {
         this.state = {languageId: 0, privacyOptionId: 0, code: "", errorMessage: null};
         this.handleChange = this.handleChange.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.uploadPaste = this.uploadPaste.bind(this);
+    }
+
+    getCachedCode() {
+        try {
+            return localStorage.getItem(Submit.STORAGE_KEY);
+        } catch {}
     }
 
     componentDidMount() {
-        if (!localStorage) {
-            return;
-        }
-
-        let cachedCode;
-        try {
-            cachedCode = localStorage.getItem(Submit.STORAGE_KEY);
-            if (!cachedCode) {
-                return;
-            }
-        } catch {}
-        this.setState((previousState) => Object.assign({}, previousState, {code: cachedCode}));
+        this.setState((previousState) =>
+            Object.assign({}, previousState, {
+                code: this.getCachedCode(),
+            })
+        );
     }
 
     handleChange(event) {
@@ -50,6 +52,21 @@ export default class Submit extends React.Component {
 
     handleClose() {
         this.setState((previousState) => Object.assign({}, previousState, {errorMessage: null}));
+    }
+
+    async uploadPaste() {
+        const api = await getBlockchain();
+        if (!api) {
+            this.setState((previousState) => Object.assign({}, previousState, {errorMessage: "Failed to load blockchain."}));
+            return;
+        }
+
+        const {languageId, code} = this.state;
+        try {
+            const pasteId = await api.postPublic(code, languageId.toString());
+        } catch (e) {
+            this.setState((previousState) => Object.assign({}, previousState, {errorMessage: e.toString()}));
+        }
     }
 
     render() {
@@ -105,7 +122,7 @@ export default class Submit extends React.Component {
                             {privacyOptions}
                         </Select>
                         <Input defaultValue="Key" disabled={privacyOptionId === 0} />
-                        <Button className="button" color="default" startIcon={<CloudUploadIcon />}>
+                        <Button className="button" color="default" startIcon={<CloudUploadIcon />} onClick={this.uploadPaste}>
                             Upload
                         </Button>
                     </div>

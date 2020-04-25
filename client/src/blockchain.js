@@ -24,7 +24,7 @@ class Blockchain {
         await this.callApi("postPublicPaste", text, "", language);
         const numUserPastes = (await this.callApi("getNumberOfUserPublicPastes")).toNumber();
         if (numUserPastes === 0) {
-            throw "Error posting paste";
+            throw "Error posting paste.";
         }
         const userPastes = await this.callApi("getPublicPastesOfUser", numUserPastes - 1, 1);
         return userPastes[0].toNumber();
@@ -38,7 +38,7 @@ class Blockchain {
                 language: paste[2],
             };
         } catch (e) {
-            throw "Could not load paste";
+            throw "Could not load paste.";
         }
     }
 }
