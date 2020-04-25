@@ -11,11 +11,35 @@ class Blockchain {
     }
 
     getAccount() {
-        return {from: this.web3.eth.currentProvider.selectedAddress};
+        return this.web3.eth.currentProvider.selectedAddress;
+    }
+
+    async callApi(method, ...args) {
+        const result = await this.instance[method].call(...args, {from: this.getAccount()});
+        console.info(`${method}: ${result}`);
+        return result;
     }
 
     async postPublic(text, language) {
-        return await this.instance.postPublicPaste(text, "", language, this.getAccount());
+        await this.callApi("postPublicPaste", text, "", language);
+        const numUserPastes = (await this.callApi("getNumberOfUserPublicPastes")).toNumber();
+        if (numUserPastes === 0) {
+            throw "Error posting paste";
+        }
+        const userPastes = await this.callApi("getPublicPastesOfUser", numUserPastes - 1, 1);
+        return userPastes[0].toNumber();
+    }
+
+    async getPublic(id) {
+        try {
+            const paste = await this.callApi("getPublicPaste", id);
+            return {
+                text: paste[0],
+                language: paste[2],
+            };
+        } catch (e) {
+            throw "Could not load paste";
+        }
     }
 }
 
