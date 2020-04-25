@@ -34,8 +34,8 @@ class Blockchain {
         try {
             const paste = await this.callApi("getPublicPaste", id);
             return {
-                text: paste[0],
-                language: paste[2],
+                code: paste[0],
+                language: parseInt(paste[2]),
             };
         } catch (e) {
             throw "Could not load paste.";

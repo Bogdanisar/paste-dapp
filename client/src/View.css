@@ -1,0 +1,8 @@
+.react-codemirror2 {
+    height: 100%;
+    width: 100%;
+}
+
+.react-codemirror2 :first-child {
+    height: 100%;
+}

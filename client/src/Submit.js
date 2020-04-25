@@ -1,5 +1,8 @@
 import React from "react";
+import {withRouter} from "react-router-dom";
+
 import Editor, {LANGUAGE_LIST} from "./Editor";
+
 import {Select, MenuItem, Input} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -7,11 +10,9 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
-import {getBlockchain} from "./blockchain";
-
 import "./Submit.css";
 
-export default class Submit extends React.Component {
+class Submit extends React.Component {
     static PRIVACY_OPTIONS = ["Public", "Private"];
     static STORAGE_KEY = "code";
 
@@ -55,9 +56,11 @@ export default class Submit extends React.Component {
     }
 
     async uploadPaste() {
-        const api = await getBlockchain();
+        const api = this.props.blockchain;
         if (!api) {
-            this.setState((previousState) => Object.assign({}, previousState, {errorMessage: "Failed to load blockchain."}));
+            this.setState((previousState) =>
+                Object.assign({}, previousState, {errorMessage: "Failed to load blockchain."})
+            );
             return;
         }
 
@@ -65,7 +68,9 @@ export default class Submit extends React.Component {
         try {
             const pasteId = await api.postPublic(code, languageId.toString());
         } catch (e) {
-            this.setState((previousState) => Object.assign({}, previousState, {errorMessage: e.toString()}));
+            this.setState((previousState) =>
+                Object.assign({}, previousState, {errorMessage: e.toString()})
+            );
         }
     }
 
@@ -122,7 +127,11 @@ export default class Submit extends React.Component {
                             {privacyOptions}
                         </Select>
                         <Input defaultValue="Key" disabled={privacyOptionId === 0} />
-                        <Button className="button" color="default" startIcon={<CloudUploadIcon />} onClick={this.uploadPaste}>
+                        <Button
+                            className="button"
+                            color="default"
+                            startIcon={<CloudUploadIcon />}
+                            onClick={this.uploadPaste}>
                             Upload
                         </Button>
                     </div>
@@ -131,3 +140,5 @@ export default class Submit extends React.Component {
         );
     }
 }
+
+export default withRouter(Submit);
