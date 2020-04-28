@@ -5,6 +5,8 @@ pragma solidity ^0.6.0;
 
 
 contract PasteDapp {
+
+    event ID(uint id);
     
     function stringsAreEqual(string memory self, string memory other) internal pure returns(bool){
         return keccak256(abi.encodePacked(self)) == keccak256(abi.encodePacked(other));
@@ -51,6 +53,7 @@ contract PasteDapp {
         
         publicPastesOfUser[msg.sender].push(pasteId);
         latestPastes.push(pasteId);
+        emit ID(pasteId);
     }
     
     function getPublicPaste(uint id) public view returns (
@@ -121,6 +124,7 @@ contract PasteDapp {
         unlistedPasteMap[pasteId] = UnlistedPaste(_encryptedText, _title, _language, msg.sender, now, false, _keyHash);
         
         unlistedPastesOfUser[msg.sender].push(pasteId);
+        emit ID(pasteId);
     }
     
     function getUnlistedPaste(uint id, string memory _keyHash) public view returns (
