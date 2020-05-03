@@ -27,14 +27,17 @@ class ListPublic extends React.Component {
     async loadPublicPaste(blockchain, pageNumber) {
         const offset = this.state.windowSize * pageNumber;
         const quantity = this.state.windowSize;
-        const public_pastes = await blockchain.getWindowPublic(offset, quantity);
+        const no_public_pastes = await blockchain.callApi("getNumberOfPublicPastes");
+        if (offset + quantity <= 0 | offset - quantity >= no_public_pastes) {
+            return;
+        }
+        const public_pastes = await blockchain.getWindowPublic(no_public_pastes - offset - quantity, quantity);
         let prevIsActive, nextIsActive;
         if(offset > 0) {
             prevIsActive = true;
         } else {
             prevIsActive = false;
         }
-        const no_public_pastes = await blockchain.callApi("getNumberOfPublicPastes");
         if (offset + quantity < no_public_pastes) {
             nextIsActive = true;
         } else {
@@ -109,8 +112,8 @@ class ListPublic extends React.Component {
         } else {
             next_button = (<button className = 'next disabled' disabled>Next</button>);
         }
-        const paste_elements = this.state.public_pastes.map((paste) => {
-            const view_link = "/view/" + paste['id'];
+        const paste_elements = this.state.public_pastes.reverse().map((paste) => {
+            const view_link = "/public/" + paste['id'];
             const sample_code_element = this.getSampleCode(paste['code']);
             const title = paste['title'] == "" ? "Untitled" : paste['title']
             return (
