@@ -3,6 +3,7 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 
 import Submit from "./Submit";
 import View from "./View";
+import ListPublic from "./ListPublic"
 
 import "./Main.css";
 
@@ -18,6 +19,9 @@ export default class Main extends React.Component {
                         </Route>
                         <Route exact path="/view/:pasteId">
                             <View blockchain={blockchain} />
+                        </Route>
+                        <Route exact path="/list">
+                            <ListPublic blockchain={blockchain} />
                         </Route>
                     </Switch>
                 </BrowserRouter>

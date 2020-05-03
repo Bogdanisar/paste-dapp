@@ -66,6 +66,38 @@ class Blockchain {
         }
     }
 
+    async getWindowPublic(offset, quantity) {
+        if (offset < 0) { // Offset must be positive
+            quantity = quantity + offset;
+            offset = 0
+        }
+        if (quantity < 0) {// Quantity must be positive
+            return []
+        }
+
+        const no_public_pastes = await this.callApi("getNumberOfPublicPastes");
+        if(offset >= no_public_pastes) {
+            return []
+        }
+        if(offset + quantity >= no_public_pastes){
+            quantity = no_public_pastes - offset;
+        }
+
+        const ids_public_pastes = await this.callApi("getLatestPastes", offset, quantity);
+        
+        let public_pastes = [];
+        for(let i=0; i<ids_public_pastes.length; ++i) {
+            const id = ids_public_pastes[i].toNumber();
+            const public_paste = await this.getPublic(id);
+            public_pastes.push({
+                ...public_paste,
+                "id": id
+            });
+        }
+
+        return public_pastes;
+    }
+
     async editPublic(id, newCode, newLanguage, newTitle=""){
         try {
             await this.callApi("editPublicPaste", id, newCode, newTitle, newLanguage);
