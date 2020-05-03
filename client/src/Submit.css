@@ -1,10 +1,12 @@
 .submit {
-    height: 100%;
+    flex-grow: 1;
+
     display: flex;
     flex-direction: column;
 }
 
 .options {
+    flex: 0 0 auto;
     margin-left: 12px;
 }
 
@@ -17,7 +19,9 @@
 }
 
 .react-codemirror2 {
-    height: 90%;
+    flex-grow: 1;
+    position: relative;
+
     width: 100%;
     margin-bottom: 24px;
 }

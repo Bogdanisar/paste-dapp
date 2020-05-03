@@ -13,12 +13,13 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import "./Submit.css";
 
 class Submit extends React.Component {
-    static PRIVACY_OPTIONS = ["Public", "Private"];
+    static PRIVACY_OPTIONS = ["Public", "Unlisted"];
     static STORAGE_KEY = "code";
+    static DEFAULT_TITLE = "Untitled";
 
     constructor(props) {
         super(props);
-        this.state = {languageId: 0, privacyOptionId: 0, code: "", errorMessage: null};
+        this.state = {languageId: 0, privacyOptionId: 0, title: Submit.DEFAULT_TITLE, code: "", errorMessage: null};
         this.handleChange = this.handleChange.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.uploadPaste = this.uploadPaste.bind(this);
@@ -40,14 +41,20 @@ class Submit extends React.Component {
 
     handleChange(event) {
         const {target} = event;
+
         if (target.name === "language") {
             this.setState((previousState) =>
                 Object.assign({}, previousState, {languageId: target.value})
             );
-        } else if (target.name === "privacy") {
+        }
+        else if (target.name === "privacy") {
             this.setState((previousState) =>
                 Object.assign({}, previousState, {privacyOptionId: target.value})
             );
+        }
+        else if (target.name === "title") {
+            let title = (target.value == "") ? Submit.DEFAULT_TITLE : target.value;
+            this.setState({title: title});
         }
     }
 
@@ -64,14 +71,29 @@ class Submit extends React.Component {
             return;
         }
 
-        const {languageId, code} = this.state;
-        try {
-            const pasteId = await blockchain.postPublic(code, languageId.toString());
-            history.push(`/view/${pasteId}`);
-        } catch (e) {
-            this.setState((previousState) =>
-                Object.assign({}, previousState, {errorMessage: e.toString()})
-            );
+        const {languageId, privacyOptionId, title, code} = this.state;
+
+        if (privacyOptionId == 0) {
+            // public paste
+            try {
+                const pasteId = await blockchain.postPublic(code, title, languageId.toString());
+                history.push(`/public/${pasteId}`);
+            }
+            catch (e) {
+                this.setState((previousState) =>
+                    Object.assign({}, previousState, {errorMessage: e.toString()})
+                );
+            }
+        }
+        else {
+            // unlisted paste
+            try {
+                const {id, key} = await blockchain.postUnlisted(code, title, languageId.toString());
+                history.push(`/unlisted/${id}_${key}`);
+            }
+            catch (e) {
+                this.setState({errorMessage: e.toString()});
+            }
         }
     }
 
@@ -82,7 +104,7 @@ class Submit extends React.Component {
         const privacyOptions = Submit.PRIVACY_OPTIONS.map((privacyOption, index) => (
             <MenuItem value={index}>{privacyOption}</MenuItem>
         ));
-        const {languageId, privacyOptionId, code, errorMessage} = this.state;
+        const {languageId, privacyOptionId, title, code, errorMessage} = this.state;
 
         return (
             <>
@@ -127,7 +149,7 @@ class Submit extends React.Component {
                         <Select name="privacy" value={privacyOptionId} onChange={this.handleChange}>
                             {privacyOptions}
                         </Select>
-                        <Input defaultValue="Key" disabled={privacyOptionId === 0} />
+                        <Input name="title" defaultValue="" placeholder="Paste title" onChange={this.handleChange}/>
                         <Button
                             className="button"
                             color="default"
