@@ -73,7 +73,7 @@ export default class Main extends React.Component {
                                 onUpdate={(t, d) => {this.setTitleAndDetails(t, d);}}
                             />
                         </Route>
-                        <Route exact path="/list">
+                        <Route exact path="/list/:page">
                             <ListPublic blockchain={blockchain} />
                         </Route>
                     </Switch>
