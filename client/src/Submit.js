@@ -13,7 +13,7 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import "./Submit.css";
 
 class Submit extends React.Component {
-    static PRIVACY_OPTIONS = ["Public", "Private"];
+    static PRIVACY_OPTIONS = ["Public", "Unlisted"];
     static STORAGE_KEY = "code";
     static DEFAULT_TITLE = "Untitled";
 
@@ -77,7 +77,7 @@ class Submit extends React.Component {
             // public paste
             try {
                 const pasteId = await blockchain.postPublic(code, title, languageId.toString());
-                history.push(`/view/${pasteId}`);
+                history.push(`/public/${pasteId}`);
             }
             catch (e) {
                 this.setState((previousState) =>
@@ -87,6 +87,13 @@ class Submit extends React.Component {
         }
         else {
             // unlisted paste
+            try {
+                const {id, key} = await blockchain.postUnlisted(code, title, languageId.toString());
+                history.push(`/unlisted/${id}_${key}`);
+            }
+            catch (e) {
+                this.setState({errorMessage: e.toString()});
+            }
         }
     }
 

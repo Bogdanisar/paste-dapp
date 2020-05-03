@@ -78,7 +78,7 @@ class Blockchain {
         }
     }
 
-    async postUnlisted(code, language, title=""){
+    async postUnlisted(code, title, language) {
         const key = this.GenerateRandomKey()
         const encryptedCode = this.Encrypt(code, key)
         const encryptedLanguage = this.Encrypt(language, key)
@@ -100,12 +100,16 @@ class Blockchain {
             const hashKey = this.Hash(key)
             var info = await this.callApi("getUnlistedPaste", id, hashKey);
             return {
-                "text": this.Decrypt(info[0], key),
+                "code": this.Decrypt(info[0], key),
                 "title": this.Decrypt(info[1], key),
-                "language": this.Decrypt(info[2], key)
+                "language": this.Decrypt(info[2], key),
+                "owner": info[3],
+                "creationDate": info[4],
+                "edited": info[5]
             }
-        } catch(error) {
-            throw "Could not load paste.";
+        }
+        catch(error) {
+            throw "Could not load paste. Maybe the link is wrong?";
         }
     }
 

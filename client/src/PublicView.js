@@ -3,9 +3,9 @@ import {useParams} from "react-router-dom";
 import Editor, {LANGUAGE_LIST} from "./Editor";
 import {convertUnixEpochToString} from "./Utils.js";
 
-import "./View.css";
+import "./PublicView.css";
 
-export default function View(props) {
+export default function PublicView(props) {
     const {blockchain} = props;
     const {pasteId} = useParams();
     const [pasteData, setPasteData] = useState(null);
@@ -32,11 +32,12 @@ export default function View(props) {
                 props.onUpdate(title, details);
 
                 setPasteData(data);
-            } catch (e) {
+            }
+            catch (e) {
                 let es = e.toString();
 
                 props.onUpdate("Error: " + es, []);
-                setPasteData({error: es});
+                setPasteData(null);
             }
         };
 

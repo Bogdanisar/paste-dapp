@@ -2,7 +2,8 @@ import React from "react";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 
 import Submit from "./Submit";
-import View from "./View";
+import PublicView from "./PublicView";
+import UnlistedView from "./UnlistedView";
 import Title from "./Title";
 
 import "./Main.css";
@@ -24,18 +25,13 @@ export default class Main extends React.Component {
     render() {
 
         const defaultValues = {
-            public: {
-                post: {
-                    title: "Post a public paste",
-                    details: []
-                },
-                get: {
-                    title: "Loading paste...",
-                    details: []
-                }
+            post: {
+                title: "Post a paste",
+                details: []
             },
-            unlisted: {
-                // TODO
+            get: {
+                title: "Loading paste...",
+                details: []
             }
         };
 
@@ -47,19 +43,31 @@ export default class Main extends React.Component {
                     <Switch>
                         <Route exact path="/">
                             <Title
-                                defaultTitle={defaultValues.public.post.title}
-                                defaultDetails={defaultValues.public.post.details}
+                                defaultTitle={defaultValues.post.title}
+                                defaultDetails={defaultValues.post.details}
                             />
                             <Submit blockchain={blockchain} />
                         </Route>
-                        <Route exact path="/view/:pasteId">
+                        <Route exact path="/public/:pasteId">
                             <Title
-                                defaultTitle={defaultValues.public.get.title}
-                                defaultDetails={defaultValues.public.get.details}
+                                defaultTitle={defaultValues.get.title}
+                                defaultDetails={defaultValues.get.details}
                                 title={this.state.title}
                                 details={this.state.details}
                             />
-                            <View
+                            <PublicView
+                                blockchain={blockchain}
+                                onUpdate={(t, d) => {this.setTitleAndDetails(t, d);}}
+                            />
+                        </Route>
+                        <Route exact path="/unlisted/:pasteId_key">
+                            <Title
+                                defaultTitle={defaultValues.get.title}
+                                defaultDetails={defaultValues.get.details}
+                                title={this.state.title}
+                                details={this.state.details}
+                            />
+                            <UnlistedView
                                 blockchain={blockchain}
                                 onUpdate={(t, d) => {this.setTitleAndDetails(t, d);}}
                             />
