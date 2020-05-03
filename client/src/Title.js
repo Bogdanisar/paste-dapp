@@ -1,6 +1,4 @@
-import React, {useState, useEffect} from "react";
-import {useParams} from "react-router-dom";
-import Editor from "./Editor";
+import React from "react";
 
 import "./Title.css";
 
