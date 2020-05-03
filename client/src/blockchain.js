@@ -1,8 +1,8 @@
 import Web3 from "web3";
 import TruffleContract from "@truffle/contract";
 
-const pastedApp = require("./blockchain.json");
-const CryptoJS=require("../node_modules/crypto-js");
+const pastedApp = require("./PasteDapp.json");
+const CryptoJS = require("../node_modules/crypto-js");
 
 
 class Blockchain {
@@ -25,7 +25,7 @@ class Blockchain {
     }
 
     Encrypt(plaintext, key){
-        return CryptoJS.AES.encrypt(plaintext, key).toString();  
+        return CryptoJS.AES.encrypt(plaintext, key).toString();
     }
 
     Decrypt(ciphertext, key){
@@ -44,7 +44,7 @@ class Blockchain {
         return result;
     }
 
-    async postPublic(code, language, title="") {
+    async postPublic(code, title, language) {
         const result = await this.callApi("postPublicPaste", code, title, language);
         try {
             return result.logs[0].args['0'].toNumber()
@@ -56,10 +56,14 @@ class Blockchain {
     async getPublic(id) {
         try {
             const paste = await this.callApi("getPublicPaste", id);
+
             return {
                 "code": paste[0],
                 "title": paste[1],
-                "language": paste[2]
+                "language": paste[2],
+                "owner": paste[3],
+                "creationDate": paste[4],
+                "edited": paste[5]
             };
         } catch (e) {
             throw "Could not load paste.";
@@ -73,7 +77,7 @@ class Blockchain {
             throw "Couldn't edit the paste. You may not have the rights to do this";
         }
     }
-    
+
     async postUnlisted(code, language, title=""){
         const key = this.GenerateRandomKey()
         const encryptedCode = this.Encrypt(code, key)

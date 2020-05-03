@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {useParams} from "react-router-dom";
-import Editor from "./Editor";
+import Editor, {LANGUAGE_LIST} from "./Editor";
+import {convertUnixEpochToString} from "./Utils.js";
 
 import "./View.css";
 
@@ -11,12 +12,31 @@ export default function View(props) {
 
 
     useEffect(() => {
+        if (blockchain == undefined) {
+            return;
+        }
+
         const fetchData = async () => {
             try {
                 const data = await blockchain.getPublic(pasteId);
+                let {code, title, language, owner, creationDate, edited} = data;
+
+                language = LANGUAGE_LIST[language];
+                let details = [
+                    "Type: Public",
+                    "Language: " + language,
+                    "Author: " + owner,
+                    "Creation date: " + convertUnixEpochToString(creationDate),
+                    ("Edited: " + (edited ? "Yes" : "No")),
+                ];
+                props.onUpdate(title, details);
+
                 setPasteData(data);
             } catch (e) {
-                setPasteData({error: e.toString()});
+                let es = e.toString();
+
+                props.onUpdate("Error: " + es, []);
+                setPasteData({error: es});
             }
         };
 
