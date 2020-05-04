@@ -127,6 +127,7 @@ class Submit extends React.Component {
                         </IconButton>
                     }
                 />
+
                 <div className="submit activeEditor">
                     <Editor
                         readOnly={false}
@@ -142,22 +143,23 @@ class Submit extends React.Component {
                             );
                         }}
                     />
-                    <div className="options">
-                        <Select name="language" value={languageId} onChange={this.handleChange}>
-                            {languageOptions}
-                        </Select>
-                        <Select name="privacy" value={privacyOptionId} onChange={this.handleChange}>
-                            {privacyOptions}
-                        </Select>
-                        <Input name="title" defaultValue="" placeholder="Paste title" onChange={this.handleChange}/>
-                        <Button
-                            className="button"
-                            color="default"
-                            startIcon={<CloudUploadIcon />}
-                            onClick={this.uploadPaste}>
-                            Upload
-                        </Button>
-                    </div>
+                </div>
+
+                <div className="options">
+                    <Select name="language" value={languageId} onChange={this.handleChange}>
+                        {languageOptions}
+                    </Select>
+                    <Select name="privacy" value={privacyOptionId} onChange={this.handleChange}>
+                        {privacyOptions}
+                    </Select>
+                    <Input name="title" defaultValue="" placeholder="Paste title" onChange={this.handleChange}/>
+                    <Button
+                        className="button"
+                        color="default"
+                        startIcon={<CloudUploadIcon />}
+                        onClick={this.uploadPaste}>
+                        Upload
+                    </Button>
                 </div>
             </>
         );

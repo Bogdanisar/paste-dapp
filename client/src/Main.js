@@ -5,6 +5,7 @@ import Submit from "./Submit";
 import ListPublic from "./ListPublic"
 import PublicView from "./PublicView";
 import UnlistedView from "./UnlistedView";
+import EditView from "./EditView";
 import Title from "./Title";
 
 import "./Main.css";
@@ -77,6 +78,11 @@ export default class Main extends React.Component {
                         </Route>
                         <Route exact path="/list/:page">
                             <ListPublic blockchain={blockchain} />
+                        </Route>
+                        <Route exact path="/edit/:id">
+                            <EditView
+                                blockchain={blockchain}
+                            />
                         </Route>
                     </Switch>
                 </BrowserRouter>
