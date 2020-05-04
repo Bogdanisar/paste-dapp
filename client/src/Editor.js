@@ -31,6 +31,8 @@ export default class Editor extends React.Component {
             <CodeMirror
                 value={code}
                 onChange={this.props.onChange}
+                autoCursor={false}
+                autoScroll={false}
                 options={{
                     theme: "xq-light",
                     indentUnit: 4,
