@@ -1,8 +1,15 @@
-.react-codemirror2 {
-    height: 100%;
+.inactiveEditor {
+    flex-grow: 1;
+    overflow-y: scroll;
+}
+
+.inactiveEditor .react-codemirror2 {
+    border-bottom: none;
+
+    flex-grow: 1;
     width: 100%;
 }
 
-.react-codemirror2 :first-child {
+.inactiveEditor .react-codemirror2 :first-child {
     height: 100%;
 }

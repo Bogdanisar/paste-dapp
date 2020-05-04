@@ -127,7 +127,7 @@ class Submit extends React.Component {
                         </IconButton>
                     }
                 />
-                <div className="submit">
+                <div className="submit activeEditor">
                     <Editor
                         readOnly={false}
                         code={code}

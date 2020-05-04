@@ -1,5 +1,6 @@
 import React from "react"
 import { withRouter, useParams } from "react-router-dom";
+import {LANGUAGE_LIST} from "./Editor";
 
 import "./ListPublic.css"
 import {convertUnixEpochToString} from "./Utils.js";
@@ -9,9 +10,9 @@ import {convertUnixEpochToString} from "./Utils.js";
 class ListPublic extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             public_pastes: [],
-            pageNumber: 0,
             windowSize: 10,
             prevIsActive: false,
             nextIsActive: false,
@@ -21,7 +22,7 @@ class ListPublic extends React.Component {
 
     async componentDidUpdate(prevProps) {
         if (prevProps.blockchain == this.props.blockchain) return;
-        await this.loadPublicPaste(this.props.blockchain, this.state.pageNumber)
+        await this.loadPublicPaste(this.props.blockchain, this.props.match.params.page)
     }
 
 
@@ -44,7 +45,7 @@ class ListPublic extends React.Component {
         } else {
             nextIsActive = false;
         }
-        this.setState({public_pastes, prevIsActive, nextIsActive, pageNumber});
+        this.setState({public_pastes, prevIsActive, nextIsActive});
     }
 
 
@@ -94,10 +95,10 @@ class ListPublic extends React.Component {
 
 
     routeChange(offset) {
-        let pageNumber = this.state.pageNumber + offset;
-        this.setState({pageNumber},  async() => {
-            await this.loadPublicPaste(this.props.blockchain, pageNumber);
-        })
+        let pageNumber = this.props.match.params.page;
+        let newPage = parseInt(pageNumber) + offset;
+        // this.props.history.push(`/list/${newPage}`);
+        window.location = `/list/${newPage}`;
     }
 
 
@@ -125,7 +126,7 @@ class ListPublic extends React.Component {
                                 <a href={view_link}>{title}</a>
                             </div>
                             <div className = 'language'>
-                                Synthax: {paste['language']}
+                                Synthax: {LANGUAGE_LIST[paste['language']]}
                             </div>
                         </div>
                         <div className = 'author'>
@@ -139,7 +140,7 @@ class ListPublic extends React.Component {
                 </li>
             );
         });
-    
+
         return (
             <div className="container">
                 {prev_button}

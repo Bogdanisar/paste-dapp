@@ -53,6 +53,8 @@ export default function UnlistedView(props) {
     }
 
     return (
-        <Editor readOnly={true} code={pasteData.code} language={pasteData.language} />
+        <div className="inactiveEditor">
+            <Editor readOnly={true} code={pasteData.code} language={pasteData.language} />
+        </div>
     );
 }

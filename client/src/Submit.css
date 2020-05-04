@@ -1,8 +1,11 @@
 .submit {
     flex-grow: 1;
+    overflow-y: scroll;
 
     display: flex;
     flex-direction: column;
+
+    background-color: white;
 }
 
 .options {
@@ -18,14 +21,14 @@
     float: right;
 }
 
-.react-codemirror2 {
+.activeEditor .react-codemirror2 {
     flex-grow: 1;
-    position: relative;
+    border-bottom: 1px solid black;
 
     width: 100%;
-    margin-bottom: 24px;
 }
 
-.react-codemirror2 :first-child {
+
+.activeEditor .react-codemirror2 :first-child {
     height: 100%;
 }
