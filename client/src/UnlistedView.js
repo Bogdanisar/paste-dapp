@@ -9,8 +9,8 @@ export default function UnlistedView(props) {
     const {blockchain} = props;
     const [pasteData, setPasteData] = useState(null);
 
-    const {pasteId_key} = useParams();
-    const [pasteId, key] = pasteId_key.split('_');
+    const {pasteId} = useParams();
+    const [pasteID, key] = pasteId.split('_');
 
     useEffect(() => {
         if (blockchain == undefined) {
@@ -19,7 +19,7 @@ export default function UnlistedView(props) {
 
         const fetchData = async () => {
             try {
-                const data = await blockchain.getUnlisted(pasteId, key);
+                const data = await blockchain.getUnlisted(pasteID, key);
                 let {code, title, language, owner, creationDate, edited} = data;
 
                 language = LANGUAGE_LIST[language];
@@ -43,7 +43,7 @@ export default function UnlistedView(props) {
         };
 
         fetchData();
-    }, [blockchain, pasteId]);
+    }, [blockchain, pasteID]);
 
     if (!blockchain || !pasteData) {
         return <></>;

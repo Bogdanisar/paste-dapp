@@ -55,18 +55,20 @@ export default class Main extends React.Component {
                                 defaultDetails={defaultValues.get.details}
                                 title={this.state.title}
                                 details={this.state.details}
+                                blockchain={blockchain}
                             />
                             <PublicView
                                 blockchain={blockchain}
                                 onUpdate={(t, d) => {this.setTitleAndDetails(t, d);}}
                             />
                         </Route>
-                        <Route exact path="/unlisted/:pasteId_key">
+                        <Route exact path="/unlisted/:pasteId">
                             <Title
                                 defaultTitle={defaultValues.get.title}
                                 defaultDetails={defaultValues.get.details}
                                 title={this.state.title}
                                 details={this.state.details}
+                                blockchain={blockchain}
                             />
                             <UnlistedView
                                 blockchain={blockchain}

@@ -1,20 +1,55 @@
 
 .titleBar {
-    background-color: lightblue;
+    /* background-color: lightblue; */
 
     min-height: 30px;
     flex: 0 0 auto;
 
     padding: 15px 20px;
+
+    position: relative;
+    /* border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0, 35, 102, 0.2); */
+    background-color: rgba(0, 35, 102, 0.15);
 }
 
 .titleBar > .title {
+    display: block;
+    /* margin-left: auto;
+    margin-right: auto; */
     text-align: center;
     margin-top: 0px;
     margin-bottom: 0px;
+
+    font-weight: bold;
+    font-size: large;
+    color: rgb(0, 35, 102);
 }
 
 .titleBar p {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
+}
+
+.edit {
+    float: right;
+    background-color: rgb(0, 35, 102);
+    color: white;
+    margin: 15px;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 20%;
+    margin-right: 20px;
+    margin-bottom: 0px;
+    position: absolute;
+    right: 0;
+    bottom: 20px;
+
+
+}
+
+.details {
+    width: 90%;
+    display: inline-block;
 }
