@@ -9,8 +9,12 @@
 }
 
 .options {
+    width: 100%;
     flex: 0 0 auto;
-    margin-left: 12px;
+    padding-left: 12px;
+    box-sizing: border-box;
+
+    border-top: 1px solid black;
 }
 
 .options > * {
@@ -23,7 +27,6 @@
 
 .activeEditor .react-codemirror2 {
     flex-grow: 1;
-    border-bottom: 1px solid black;
 
     width: 100%;
 }

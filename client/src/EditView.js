@@ -13,6 +13,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 import "./Title.css";
+import "./Submit.css";
 import "./EditView.css";
 
 class EditView extends React.Component {
