@@ -2,6 +2,7 @@ import React from "react"
 import { withRouter, useParams } from "react-router-dom";
 
 import "./ListPublic.css"
+import {convertUnixEpochToString} from "./Utils.js";
 
 
 
@@ -127,7 +128,13 @@ class ListPublic extends React.Component {
                                 Synthax: {paste['language']}
                             </div>
                         </div>
+                        <div className = 'author'>
+                            Author: {paste['owner']}
+                        </div>
                         {sample_code_element}
+                        <div className = 'posted_on'>
+                            Posted on: {convertUnixEpochToString(paste['creationDate'])}
+                        </div>
                     </div>
                 </li>
             );

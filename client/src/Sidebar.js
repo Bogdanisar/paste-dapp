@@ -9,7 +9,7 @@ export default class Sidebar extends React.Component {
                     Paste D-App
                 </a>
                 <a href="/list">
-                    List Public Pastes
+                    Public Pastes
                 </a>
             </div>
         );
