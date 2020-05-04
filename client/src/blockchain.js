@@ -88,7 +88,7 @@ class Blockchain {
         }
 
         const ids_public_pastes = await this.callApi("getLatestPastes", offset, quantity);
-        
+
         let public_pastes = [];
         for(let i=0; i<ids_public_pastes.length; ++i) {
             const id = ids_public_pastes[i].toNumber();
@@ -102,7 +102,7 @@ class Blockchain {
         return public_pastes;
     }
 
-    async editPublic(id, newCode, newLanguage, newTitle=""){
+    async editPublic(id, newCode, newTitle, newLanguage){
         try {
             await this.callApi("editPublicPaste", id, newCode, newTitle, newLanguage);
         } catch(e) {
@@ -145,7 +145,7 @@ class Blockchain {
         }
     }
 
-    async editUnlisted(id, key, newCode, newLanguage, newTitle=""){
+    async editUnlisted(id, key, newCode, newTitle, newLanguage){
         try {
             const encryptedCode = this.Encrypt(newCode, key);
             const encryptedTitle = this.Encrypt(newTitle, key);

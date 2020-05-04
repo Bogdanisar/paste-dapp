@@ -1,0 +1,41 @@
+
+
+.editBar > div {
+    margin-bottom: 10px;
+}
+
+
+.submit {
+    flex-grow: 1;
+    overflow-y: scroll;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: white;
+}
+
+.options {
+    flex: 0 0 auto;
+    margin-left: 12px;
+}
+
+.options > * {
+    margin-right: 12px;
+}
+
+.options .button {
+    float: right;
+}
+
+.activeEditor .react-codemirror2 {
+    flex-grow: 1;
+    border-bottom: 1px solid black;
+
+    width: 100%;
+}
+
+
+.activeEditor .react-codemirror2 :first-child {
+    height: 100%;
+}
